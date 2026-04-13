@@ -1,5 +1,5 @@
 name: Pioneer
-version: "1.0.0"
+version: "1.0.1"
 slug: pioneer
 description: Find interesting posts
 startup: services
