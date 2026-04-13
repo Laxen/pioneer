@@ -22,13 +22,8 @@ log = logging.getLogger(__name__)
 
 PROMPT = os.environ.get("PROMPT", "")
 
-SUBREDDITS = [
-    "diyelectronics",
-    "homeassistant",
-    "maker",
-    "matterprotocol",
-    "homeautomation",
-]
+_subreddits_env = os.environ.get("SUBREDDITS", "")
+SUBREDDITS = [s.strip() for s in _subreddits_env.split(",") if s.strip()] or []
 
 INTERVAL_HOURS = 1
 
@@ -54,13 +49,12 @@ def run_job(fetchers: list[RedditFetcher], llm: OpenAIFilter) -> None:
         return
 
     results = llm.filter_posts(all_posts)
-    relevant = [r for r in results if r.get("can_contribute")]
 
-    if not relevant:
+    if not results:
         log.info("No relevant posts found this cycle")
     else:
-        log.info("Found %d relevant posts:", len(relevant))
-        for post in relevant:
+        log.info("Found %d relevant posts:", len(results))
+        for post in results:
             print(f"\n--- r/{post['subreddit']} ---")
             print(f"  Title: {post['title']}")
             print(f"  URL:   {post['url']}")
@@ -68,7 +62,7 @@ def run_job(fetchers: list[RedditFetcher], llm: OpenAIFilter) -> None:
 
     if llm.last_usage is not None:
         try:
-            send_results(llm.last_usage, relevant, all_posts)
+            send_results(llm.last_usage, results, all_posts)
             log.info("Results sent to Telegram")
         except Exception:
             log.exception("Failed to send Telegram message")
