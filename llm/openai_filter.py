@@ -7,12 +7,11 @@ log = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """\
 You are a post relevance filter. Given a user's prompt and a list of posts, \
-determine which posts the user is interested in.
+return only the posts that are relevant to the user's prompt.
 
-For each post, respond with a JSON array of objects. Each object must have:
+Respond with a JSON array of objects for relevant posts only. Each object must have:
 - "index": the 0-based index of the post
-- "can_contribute": true or false
-- "reasoning": a one-sentence explanation
+- "reasoning": a one-sentence explanation of why this post is relevant
 
 Respond ONLY with the JSON array, no markdown fences or extra text."""
 
@@ -62,7 +61,6 @@ class OpenAIFilter:
             idx = a["index"]
             if 0 <= idx < len(posts):
                 post = posts[idx].copy()
-                post["can_contribute"] = a["can_contribute"]
                 post["reasoning"] = a["reasoning"]
                 results.append(post)
         return results
