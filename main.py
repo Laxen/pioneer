@@ -23,13 +23,7 @@ log = logging.getLogger(__name__)
 PROMPT = os.environ.get("PROMPT", "")
 
 _subreddits_env = os.environ.get("SUBREDDITS", "")
-SUBREDDITS = [s.strip() for s in _subreddits_env.split(",") if s.strip()] or [
-    "diyelectronics",
-    "homeassistant",
-    "maker",
-    "matterprotocol",
-    "homeautomation",
-]
+SUBREDDITS = [s.strip() for s in _subreddits_env.split(",") if s.strip()] or []
 
 INTERVAL_HOURS = 1
 
