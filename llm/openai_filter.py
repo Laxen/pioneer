@@ -7,7 +7,8 @@ log = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """\
 You are a post relevance filter. Given a user's prompt and a list of posts, \
-return only the posts that are relevant to the user's prompt.
+return only the posts that are STRICTLY relevant to the user's prompt. If \
+a post's relevance is questionable, don't return it.
 
 Respond with a JSON array of objects for relevant posts only. Each object must have:
 - "index": the 0-based index of the post
