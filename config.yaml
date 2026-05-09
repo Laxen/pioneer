@@ -16,6 +16,7 @@ options:
   telegram_chat_id: ""
   openai_model: "gpt-4o-mini"
   prompt: ""
+  only_post_if_relevant: false
   subreddits:
     - "diyelectronics"
     - "homeassistant"
@@ -28,5 +29,6 @@ schema:
   telegram_chat_id: str
   openai_model: str
   prompt: str
+  only_post_if_relevant: bool
   subreddits:
     - str
