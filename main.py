@@ -25,6 +25,8 @@ PROMPT = os.environ.get("PROMPT", "")
 _subreddits_env = os.environ.get("SUBREDDITS", "")
 SUBREDDITS = [s.strip() for s in _subreddits_env.split(",") if s.strip()] or []
 
+ONLY_POST_IF_RELEVANT = os.environ.get("ONLY_POST_IF_RELEVANT", "false").lower() == "true"
+
 INTERVAL_HOURS = 1
 
 # ---------------------------------------------------------------------------
@@ -61,11 +63,14 @@ def run_job(fetchers: list[RedditFetcher], llm: OpenAIFilter) -> None:
             print(f"  Why:   {post['reasoning']}")
 
     if llm.last_usage is not None:
-        try:
-            send_results(llm.last_usage, results, all_posts)
-            log.info("Results sent to Telegram")
-        except Exception:
-            log.exception("Failed to send Telegram message")
+        if ONLY_POST_IF_RELEVANT and not results:
+            log.info("only_post_if_relevant is enabled and no relevant posts found — skipping Telegram message")
+        else:
+            try:
+                send_results(llm.last_usage, results, all_posts)
+                log.info("Results sent to Telegram")
+            except Exception:
+                log.exception("Failed to send Telegram message")
 
 
 def main() -> None:
